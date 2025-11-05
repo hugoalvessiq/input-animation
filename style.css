@@ -1,0 +1,235 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ================================================= */
+/* DEFINING CSS VARIABLES           */
+/* ================================================= */
+:root {
+  /* Main Colors of the Theme */
+  --cor-fundo-claro: #9575cd;
+  --cor-fundo-medio: #673ab7;
+  --cor-fundo-escuro: #602fb6;
+  --cor-texto-principal: #fff;
+  --cor-input-fundo: #fff;
+  --cor-input-texto: rgb(43, 43, 87);
+  --cor-linha-base: #ccc;
+  --cor-linha-foco: #3d226d;
+  --cor-label-base: #888;
+  --cor-label-foco: var(--cor-texto-principal);
+  --cor-erro: #f44336;
+  --cor-erro-texto: #ffcdd2; /* Lighter color for error text. */
+  --cor-botao: #ffe082;
+  --cor-botao-texto: #333;
+
+  /* Sizes and Spacing */
+  --altura-erro-msg: 14px;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  /* Using variables in the gradient */
+  background: linear-gradient(
+    270deg,
+    var(--cor-fundo-escuro),
+    var(--cor-fundo-medio),
+    var(--cor-fundo-claro)
+  );
+  color: var(--cor-texto-principal);
+  display: flex;
+  background-size: 600% 600%;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  animation: gradientMove 12s ease infinite;
+}
+
+/* ====== GRADIENTE ANIMATION ====== */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.container {
+  display: flex;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  align-items: center;
+  flex-direction: column;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.input-group {
+  position: relative; /* base for line positioning */
+  width: 300px;
+  margin-bottom: 43px; /* field spacing */
+}
+
+/* Input style (keeps optional static border) */
+.input-group input {
+  max-width: 100%;
+  width: 100%;
+  padding: 10px;
+  font-size: 0.95rem;
+  /* border: none; */
+  border-top: 2px solid transparent;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid var(--cor-linha-base); /* baseline, always visible */
+  outline: none;
+  background: var(--cor-input-fundo);
+  border-radius: 5px;
+  color: var(--cor-input-texto);
+}
+
+/* Styling and positioning of the ::after pseudo-element */
+.input-group input::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0; /* The pseudo-element starts with zero width. */
+}
+
+.input-group input:focus::after {
+  animation-name: expandir-borda;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards; /* Maintains the final state of the animation. */
+}
+
+/* label styles */
+.input-group label {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  font-size: 0.8rem;
+  color: var(--cor-label-base);
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
+  padding-left: 10px;
+}
+
+/* The label moves up when the input field is focused or filled. */
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+  top: -20px;
+  font-size: 0.8rem;
+  color: var(--cor-label-foco);
+}
+
+/* Line that will be animated */
+.input-group .underline {
+  content: "";
+  position: absolute;
+  bottom: 19px; /* aligned with the input base */
+  left: 0;
+  width: 0;
+  height: 3px;
+  border-radius: 5px;
+  background-color: var(--cor-linha-foco);
+  /* transition: width 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); */
+  max-width: 100%;
+}
+
+/* When the input receives focus, it expands the line. */
+.input-group input:focus ~ .underline {
+  width: 100%;
+}
+
+/* Hide the animated line when the input has the error class. */
+input.erro-input ~ .underline {
+  display: none;
+}
+
+/* Optional: if you want to use :focus-within (without needing the ~) */
+.input-group:focus-within .underline {
+  width: 100%;
+
+  /* Applying animation */
+  animation-name: mover-e-mudar-cor;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-in-out;
+  /* animation-iteration-count: infinite; */
+  animation-direction: alternate;
+}
+
+@keyframes mover-e-mudar-cor {
+  0% {
+    /* transform: translateX(0); */
+    transition: width 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    width: 0%;
+    background-color: var(--cor-linha-foco);
+  }
+  100% {
+    /* transform: translateX(200px); */
+    transition: width 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    width: 100%;
+    background-color: var(--cor-linha-foco);
+  }
+}
+
+#erro {
+  color: var(--cor-erro-texto);
+  font-size: 0.8rem;
+  margin-top: 5px;
+  display: block;
+  height: var(--altura-erro-msg);
+}
+
+input.erro-input {
+  border: 2px solid var(--cor-erro);
+  transition: ease-in 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.btn {
+  background-color: var(--cor-botao);
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 6px;
+  font-weight: 600;
+  color: var(--cor-botao-texto);
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* Show/Hide password */
+.senha-group {
+  align-items: center;
+  position: relative;
+}
+
+.toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--cor-texto-principal);
+}
